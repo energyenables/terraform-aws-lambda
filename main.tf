@@ -19,6 +19,11 @@ locals {
 
 }
 
+data "aws_lambda_layer_version" "this" {
+  for_each   = var.layer_names
+  layer_name = each.value
+}
+
 resource "aws_lambda_function" "this" {
   count = local.create && var.create_function && !var.create_layer ? 1 : 0
 
@@ -29,7 +34,7 @@ resource "aws_lambda_function" "this" {
   memory_size                    = var.memory_size
   reserved_concurrent_executions = var.reserved_concurrent_executions
   runtime                        = var.package_type != "Zip" ? null : var.runtime
-  layers                         = var.layers
+  layers                         = var.layers == null ? data.aws_lambda_layer_version.this.arn : var.layers
   timeout                        = var.lambda_at_edge ? min(var.timeout, 30) : var.timeout
   publish                        = var.lambda_at_edge ? true : var.publish
   kms_key_arn                    = var.kms_key_arn

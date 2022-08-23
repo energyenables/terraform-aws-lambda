@@ -91,6 +91,11 @@ variable "layers" {
   default     = null
 }
 
+variable "layer_names" {
+  type    = set(string)
+  default = []
+}
+
 variable "architectures" {
   description = "Instruction set architecture for your Lambda function. Valid values are [\"x86_64\"] and [\"arm64\"]."
   type        = list(string)
@@ -602,7 +607,8 @@ variable "store_on_s3" {
 variable "s3_object_storage_class" {
   description = "Specifies the desired Storage Class for the artifact uploaded to S3. Can be either STANDARD, REDUCED_REDUNDANCY, ONEZONE_IA, INTELLIGENT_TIERING, or STANDARD_IA."
   type        = string
-  default     = "ONEZONE_IA" # Cheaper than STANDARD and it is enough for Lambda deployments
+  default     = "ONEZONE_IA"
+  # Cheaper than STANDARD and it is enough for Lambda deployments
 }
 
 variable "s3_bucket" {
